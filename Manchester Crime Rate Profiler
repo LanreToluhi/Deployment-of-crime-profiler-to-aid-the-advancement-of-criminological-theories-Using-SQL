@@ -1,0 +1,15 @@
+/* Creates a view for total population in 2017 and 2018 */
+create view population_total 
+as
+(select * from dbo.population_data_2017 union all select * from
+dbo.population_data_2018)
+
+/*crime type by month from 2017 to 2018 in Manchester area, with total population and number of times
+crime was committed*/
+select a.[Month], a.[Crime type], a.[LSOA name] , sum(b.[All_Ages]) as 'Total Population', 
+count(*) as 'Nos of times crime committed'
+from dbo.Manchester_crime_data a
+join dbo.population_total b on a.[LSOA name] = b.[Output_Area]
+where [LSOA name] like 'Man%' 
+group by a.[Month],a.[Crime type], a.[LSOA name]
+order by [LSOA name] ASC, [Month] asc
